@@ -37,25 +37,27 @@ window.addEventListener("scroll", function () {
         scrollMsg = null; 
     }
 
-    // Check if the user is at the bottom of the page and not already scrolling back
-    if (!scrollingBack && window.scrollY + window.innerHeight >= scrollThreshold) {
+    // Check if the user is at the top of the page and not already scrolling down
+    if (!scrollingBack && window.scrollY === 0) {
         scrollingBack = true; // Set flag to prevent multiple triggers
         setTimeout(function () {
-            slowScrollToTop(5000); // Call slow scroll function with a duration of 5000ms (5 seconds)
-            scrollingBack = false; // Reset flag after scrolling back
+            slowScrollToBottom(5000); // Call slow scroll function with a duration of 5000ms (5 seconds)
+            scrollingBack = false; // Reset flag after scrolling to the bottom
         }, 500); // Delay of 500 milliseconds (adjustable)
     }
 });
 
-// Function to perform the smooth, slow scroll back to the top
-function slowScrollToTop(duration) {
+// Function to perform the smooth, slow scroll to the bottom
+function slowScrollToBottom(duration) {
     const start = window.scrollY;
+    const end = document.body.scrollHeight - window.innerHeight; // Calculate the bottom position
+    const distance = end - start;
     const startTime = performance.now();
 
     function animateScroll(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1); // Ensure progress never exceeds 1
-        window.scrollTo(0, start * (1 - progress)); // Scroll proportionally based on elapsed time
+        window.scrollTo(0, start + distance * progress); // Scroll proportionally based on elapsed time
 
         if (progress < 1) {
             requestAnimationFrame(animateScroll); // Continue animation until progress reaches 1
